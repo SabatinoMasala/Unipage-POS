@@ -10,9 +10,21 @@ export default new Router({
             name: 'home',
             component: require('@/components/Home')
         }, {
-            path: '/main',
+            path: '/main/:business_id',
             name: 'main',
             component: require('@/components/Main')
+        }, {
+            path: '/login',
+            name: 'login',
+            component: require('@/components/Login')
+        }, {
+            path: '/logout',
+            name: 'logout',
+            component: require('@/components/Logout')
+        }, {
+            path: '/choose-business',
+            name: 'chooseBusiness',
+            component: require('@/components/ChooseBusiness')
         },
         {
             path: '*',

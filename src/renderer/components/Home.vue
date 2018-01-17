@@ -52,7 +52,6 @@
     import Socket from '@/helpers/socket';
     const packagejson = require('../../../package.json');
     import store from 'store';
-    import API from '@/helpers/api';
 
     export default {
         computed: {
@@ -67,14 +66,19 @@
                 this.status = 'PINGING';
                 Socket
                     .setup(this.ip)
-                    .ping()
-                    .then(res => {
-                        this.$router.push({
-                            name: 'main'
-                        })
-                    })
-                    .catch(error => {
-                        this.$message.error('Er kon geen verbinding worden gemaakt')
+                    .ping((data, client) => {
+                        if (!client) {
+                            return;
+                        }
+                        if (data.type === 'error') {
+                            this.$message.error('Er kon geen verbinding worden gemaakt');
+                            client.destroy();
+                        } else {
+                            client.destroy();
+                            this.$router.push({
+                                name: 'main'
+                            });
+                        }
                     })
             },
             getVersion() {

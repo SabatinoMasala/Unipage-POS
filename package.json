@@ -24,11 +24,11 @@
   "build": {
     "asar": true,
     "productName": "unipage-pos",
-    "appId": "be.wonderlus.myos-print",
+    "appId": "be.wonderlus.unipage-pos",
     "protocols": {
-      "name": "myos-deep-linking",
+      "name": "pos-deep-linking",
       "schemes": [
-        "myos-print"
+        "unipage-pos"
       ]
     },
     "directories": {
@@ -63,6 +63,7 @@
     }
   },
   "dependencies": {
+    "accounting": "^0.4.1",
     "axios": "^0.16.1",
     "bluebird": "^3.5.0",
     "devtron": "^1.1.0",
@@ -70,7 +71,9 @@
     "electron-log": "^2.2.7",
     "electron-osx-sign": "^0.4.7",
     "element-ui": "^2.0.0-alpha.2",
+    "jquery": "^3.2.1",
     "lodash": "^4.17.4",
+    "moment": "^2.20.1",
     "node-sass": "^4.5.3",
     "raven": "^2.3.0",
     "raven-js": "^3.20.1",

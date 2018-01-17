@@ -6,7 +6,25 @@
 
 <script>
     export default {
-        name: 'myosprint'
+        name: 'unipage-epos',
+        mounted() {
+            if (!localStorage.token) {
+                this.$router.push({
+                    name: 'login'
+                })
+            } else {
+                if (!localStorage.selectedBusiness) {
+                    this.$router.push({
+                        name: 'chooseBusiness'
+                    })
+                } else {
+                    this.$router.push({
+                        name: 'main',
+                        params: localStorage.selectedBusiness
+                    })
+                }
+            }
+        }
     }
 </script>
 

@@ -4,6 +4,8 @@ import Vue from 'vue'
 import axios from 'axios'
 import deeplink from '@/router/deeplink'
 import {ipcRenderer} from 'electron';
+import locale from 'element-ui/lib/locale/lang/nl'
+
 
 import App from './App.vue'
 import router from './router'
@@ -17,7 +19,7 @@ import Raven from 'raven-js';
 //     .install();
 
 Raven.context(function () {
-    Vue.use(ElementUI);
+    Vue.use(ElementUI, {locale});
 
     if (!process.env.IS_WEB) Vue.use(require('vue-electron'));
 
