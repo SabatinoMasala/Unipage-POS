@@ -44,7 +44,7 @@
                     >
                         <template slot-scope="scope">
                             <div v-if="!scope.row.is_paid">
-                                <el-button @click.stop.prevent="sendPayment(scope.$index)">Maak betaling aan</el-button>
+                                <el-button @click.stop.prevent="sendPaymentByIndex(scope.$index)">Maak betaling aan</el-button>
                             </div>
                             <div v-else>
                                 <el-button :disabled="true">Order werd betaald</el-button>
@@ -89,6 +89,7 @@
     import Socket from '@/helpers/socket';
     import accounting from 'accounting';
     import isProduction from '@/helpers/isProduction';
+    import SocketHelper from '@/helpers/SocketServer';
     export default {
         computed: {
             electronicPaymentsTableData() {
@@ -104,6 +105,7 @@
             }
         },
         mounted() {
+            SocketHelper.addListener(this);
             Ajax
                 .get(Api('/manage/' + this.$route.params.business_id + '/electronic-payments'))
                 .done(data => {
@@ -111,6 +113,20 @@
                 })
         },
         methods: {
+            handleClientUpdate(clients) {
+                clients.forEach(client => {
+                    client.on('payment', data => {
+                        Ajax
+                            .get(Api('/manage/' + this.$route.params.business_id + '/electronic-payments/' + data))
+                            .done(data => {
+                                this.handleAutomaticPayment(data['electronic-payment']);
+                            })
+                    })
+                })
+            },
+            handleAutomaticPayment(electronicPayment) {
+                this.sendPayment(electronicPayment);
+            },
             setMessage(status, message) {
                 setTimeout(_ => {
                     this.status = 'IDLE';
@@ -119,8 +135,11 @@
                 this.status = status;
                 this.message = message;
             },
-            sendPayment(rowIndex) {
+            sendPaymentByIndex(rowIndex) {
                 const electronicPayment = this.electronicPayments[rowIndex];
+                this.sendPayment(electronicPayment);
+            },
+            sendPayment(electronicPayment) {
                 const order = electronicPayment.order;
                 this.status = 'PENDING';
                 this.message = 'Bezig met aanmaken transactie';

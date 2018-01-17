@@ -79,6 +79,7 @@
     "raven-js": "^3.20.1",
     "route-parser": "^0.0.5",
     "sass-loader": "^6.0.6",
+    "socket.io": "^2.0.4",
     "store": "^2.0.12",
     "vue": "2.5.2",
     "vue-electron": "^1.0.6",
