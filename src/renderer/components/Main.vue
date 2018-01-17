@@ -1,7 +1,7 @@
 <template>
     <div>
 
-        <el-menu theme="dark" class="el-menu-demo" mode="horizontal">
+        <el-menu class="el-menu-demo" mode="horizontal">
             <el-menu-item index="1" @click="chooseBusiness()">
                 <i class="el-icon-caret-left"></i>
                 Kies een andere zaak
@@ -9,6 +9,12 @@
         </el-menu>
 
         <el-row>
+            <el-col :span="22" :offset="1">
+                <div style="margin-top: 20px;">
+                    <el-button @click.stop.prevent="$router.push({name: 'settings'})" type="primary">Terminal Instellingen</el-button>
+                    <el-button @click.stop.prevent="makeTestPayment" type="warning">Stuur test betaling</el-button>
+                </div>
+            </el-col>
             <el-col :span="22" :offset="1">
                 <div :class="'status status-' + status">
                     <p>Status: {{message}}</p>
@@ -65,7 +71,7 @@
         text-align: center;
         color: #fff;
         border-radius: 5px;
-        margin-top: 50px;
+        margin-top: 20px;
         padding: 15px;
         width: 100%;
         &-IDLE {
@@ -113,6 +119,13 @@
                 })
         },
         methods: {
+            makeTestPayment() {
+                this.sendPayment({
+                    order: {
+                        total_price: 0.01
+                    }
+                })
+            },
             handleClientUpdate(clients) {
                 clients.forEach(client => {
                     client.on('payment', data => {
@@ -125,7 +138,12 @@
                 })
             },
             handleAutomaticPayment(electronicPayment) {
-                this.sendPayment(electronicPayment);
+                if (this.electronicPayments.indexOf(electronicPayment) === -1) {
+                    this.electronicPayments.unshift(electronicPayment);
+                }
+                if (!electronicPayment.is_paid) {
+                    this.sendPayment(electronicPayment);
+                }
             },
             setMessage(status, message) {
                 setTimeout(_ => {
@@ -148,13 +166,14 @@
                         if (!client) {
                             return;
                         }
-                        if (!isProduction) {
+                        /* if (!isProduction) {
                             data.type = 'trxResponse';
                             data.response = {test: true};
-                        }
+                        } */
                         if (data.type === 'error-notification') {
                             client.destroy();
                             this.setMessage('FAILED', 'Fout met transactie');
+                            SocketHelper.io.emit('fail');
                         }
                         if (data.type === 'trxResponse') {
                             electronicPayment.is_paid = true;
@@ -170,7 +189,8 @@
                                     this.$notify.error('Transactie kon niet worden opgeslagen');
                                 });
                             client.destroy();
-                            this.setMessage('SUCCESS', 'Transactie gelukt')
+                            SocketHelper.io.emit('success');
+                            this.setMessage('SUCCESS', 'Transactie gelukt');
                         }
                         // client.destroy();
                     });

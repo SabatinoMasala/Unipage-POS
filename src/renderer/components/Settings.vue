@@ -3,11 +3,14 @@
         <div class="m-auto">
             <h1 class="mt-0 text-center">Vul het IP adres van de betaalterminal in</h1>
             <el-row :gutter="10">
-                <el-col :span="12" :offset="2">
+                <el-col :span="6" :offset="2">
                     <el-input placeholder="192.168.0.0" v-model="ip"></el-input>
                 </el-col>
+                <el-col :span="6">
+                    <el-input placeholder="50000" v-model="port"></el-input>
+                </el-col>
                 <el-col :span="8">
-                    <el-button @click.stop.prevent="setupServer()" class="btn-block" type="primary" :disabled="!canContinue">
+                    <el-button @click.stop.prevent="setupTerminal()" class="btn-block" type="primary" :disabled="!canContinue || isLoading">
                         <span v-if="!isLoading">Maak verbinding</span>
                         <span v-else>Bezig met verbinden</span>
                     </el-button>
@@ -60,9 +63,16 @@
             }
         },
         mounted() {
+            if (window.localStorage.terminal_ip) {
+                this.ip = window.localStorage.terminal_ip;
+            }
+            if (window.localStorage.port) {
+                this.ip = window.localStorage.port;
+            }
         },
         methods: {
-            setupServer() {
+            setupTerminal() {
+                this.isLoading = true;
                 this.status = 'PINGING';
                 Socket
                     .setup(this.ip)
@@ -70,14 +80,16 @@
                         if (!client) {
                             return;
                         }
-                        if (data.type === 'error') {
+                        if (data.type === 'error' || data.type === 'timeout') {
                             this.$message.error('Er kon geen verbinding worden gemaakt');
+                            this.isLoading = false;
                             client.destroy();
                         } else {
                             client.destroy();
-                            this.$router.push({
-                                name: 'main'
-                            });
+                            this.isLoading = false;
+                            window.localStorage.terminal_ip = this.ip;
+                            window.localStorage.terminal_port = this.port;
+                            this.$router.push('/main/' + window.localStorage.selectedBusiness);
                         }
                     })
             },
@@ -89,7 +101,8 @@
             return {
                 status: false,
                 isLoading: false,
-                ip: ''
+                ip: '',
+                port: '50000',
             }
         }
     }

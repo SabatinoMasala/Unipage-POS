@@ -5,6 +5,7 @@ io.listen(port);
 class SocketHelper {
     clients = [];
     listeners = [];
+    io = false;
     onClientConnect = (client) => {
         this.clients.push(client);
         this.onUpdate(this.clients);
@@ -29,6 +30,7 @@ class SocketHelper {
 }
 
 const socketHelper = new SocketHelper();
+socketHelper.io = io;
 
 io.on('connection', function(client) {
     socketHelper.onClientConnect(client);

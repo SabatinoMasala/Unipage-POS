@@ -55,7 +55,7 @@
             manageBusiness() {
                 if (this.selectedBusiness) {
                     localStorage.selectedBusiness = this.selectedBusiness;
-                    this.$router.push('/main/' + this.selectedBusiness);
+                    this.$router.push('/settings');
                 }
             }
         },

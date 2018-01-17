@@ -25,8 +25,7 @@ export default {
         if (opts.timeout) {
             client.setTimeout(2000);
         }
-        // client.connect(this.port, this.ip, function() {
-        client.connect(50000, '192.168.150.241', function() {
+        client.connect(this.port, this.ip, function() {
             let buffer = new Buffer(xml);
             const size = Buffer.byteLength(buffer);
             const finalBuffer = Buffer.alloc(4 + size);

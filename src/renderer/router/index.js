@@ -6,9 +6,9 @@ Vue.use(Router);
 export default new Router({
     routes: [
         {
-            path: '/',
-            name: 'home',
-            component: require('@/components/Home')
+            path: '/settings',
+            name: 'settings',
+            component: require('@/components/Settings')
         }, {
             path: '/main/:business_id',
             name: 'main',
