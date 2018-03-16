@@ -78,6 +78,10 @@
                     .setup(this.ip)
                     .ping((data, client) => {
                         if (!client) {
+                            if (!this.hasFound) {
+                                this.$message.error('Toestel werd niet gevonden');
+                            }
+                            this.isLoading = false;
                             return;
                         }
                         if (data.type === 'error' || data.type === 'timeout') {
@@ -87,6 +91,7 @@
                         } else {
                             client.destroy();
                             this.isLoading = false;
+                            this.hasFound = true;
                             window.localStorage.terminal_ip = this.ip;
                             window.localStorage.terminal_port = this.port;
                             this.$router.push('/main/' + window.localStorage.selectedBusiness);
@@ -99,6 +104,7 @@
         },
         data() {
             return {
+                hasFound: false,
                 status: false,
                 isLoading: false,
                 ip: '',

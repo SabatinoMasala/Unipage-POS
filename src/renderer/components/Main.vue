@@ -8,8 +8,6 @@
             </el-menu-item>
         </el-menu>
 
-        <webview id="foo" src="https://frituur-best-resto.unipage.eu/kiosk/40ed20ad53694db2bdfc996a22151263" style="width:100%; height:480px"></webview>
-
         <el-row>
             <el-col :span="22" :offset="1">
                 <div style="margin-top: 20px;">
