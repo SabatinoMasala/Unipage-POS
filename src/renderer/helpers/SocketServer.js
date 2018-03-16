@@ -1,5 +1,6 @@
 const io = require('socket.io')();
 const port = 37001;
+io.set('origins', '*:*');
 io.listen(port);
 
 class SocketHelper {
