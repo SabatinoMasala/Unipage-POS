@@ -6,6 +6,7 @@ export default {
     setup(ip, port = 50000) {
         this.ip = ip;
         this.port = port;
+        this.setup = true;
         return this;
     },
     ping(stream) {

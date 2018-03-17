@@ -22,12 +22,12 @@
             </el-col>
             <el-col :span="22" :offset="1" style="margin-bottom: 50px;">
                 <el-table
-                    :data="electronicPaymentsTableData"
-                    style="width: 100%"
+                        :data="electronicPaymentsTableData"
+                        style="width: 100%"
                 >
                     <el-table-column
-                        prop="created_at"
-                        label="Datum"
+                            prop="created_at"
+                            label="Datum"
                     >
                     </el-table-column>
                     <el-table-column
@@ -36,17 +36,17 @@
                     >
                     </el-table-column>
                     <el-table-column
-                        prop="customer"
-                        label="Klant"
+                            prop="customer"
+                            label="Klant"
                     >
                     </el-table-column>
                     <el-table-column
-                        prop="is_paid_text_status"
-                        label="Betaald"
+                            prop="is_paid_text_status"
+                            label="Betaald"
                     >
                     </el-table-column>
                     <el-table-column
-                        label="Acties"
+                            label="Acties"
                     >
                         <template slot-scope="scope">
                             <div v-if="!scope.row.is_paid">
@@ -121,6 +121,7 @@
         methods: {
             makeTestPayment() {
                 this.sendPayment({
+                    test: true,
                     order: {
                         total_price: 0.01
                     }
@@ -176,6 +177,15 @@
                             SocketHelper.io.emit('fail');
                         }
                         if (data.type === 'trxResponse') {
+
+                            if (electronicPayment.test === true) {
+                                this.$notify.success('Test transactie gelukt');
+                                client.destroy();
+                                SocketHelper.io.emit('success');
+                                this.setMessage('SUCCESS', 'Transactie gelukt');
+                                return;
+                            }
+
                             electronicPayment.is_paid = true;
                             Ajax
                                 .sendJSON(Api('/manage/' + this.$route.params.business_id + '/electronic-payments/' + electronicPayment.id), {

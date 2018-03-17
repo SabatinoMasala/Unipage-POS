@@ -5,6 +5,7 @@
 </template>
 
 <script>
+    import Socket from '@/helpers/socket';
     export default {
         name: 'unipage-epos',
         mounted() {
@@ -18,10 +19,19 @@
                         name: 'chooseBusiness'
                     })
                 } else {
-                    this.$router.push({
-                        name: 'main',
-                        params: localStorage.selectedBusiness
-                    })
+                    if (!localStorage.terminal_ip) {
+                        this.$router.push({
+                            name: 'settings'
+                        })
+                    } else {
+                        Socket.setup(localStorage.terminal_ip, localStorage.terminal_port);
+                        this.$router.push({
+                            name: 'main',
+                            params: {
+                                business_id: localStorage.selectedBusiness
+                            },
+                        })
+                    }
                 }
             }
         }
